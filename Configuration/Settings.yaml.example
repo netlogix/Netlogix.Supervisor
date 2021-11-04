@@ -1,0 +1,67 @@
+Netlogix:
+  Supervisor:
+
+    groups:
+
+      secondary-group:
+
+        # Supervisor group name.
+        # Defaults to the array key if not present.
+        # Gets cleaned up to not contain invalid characters as of supervisor settings
+        name: "%FLOW_PATH_ROOT%-secondary"
+
+        # Defaults to 999 if not present.
+        priority: 200
+
+    programs:
+
+      some-program:
+
+        # Group name targets a Netlogix.Supervisor.groups key.
+        # Groups are created implicitly if not explicitly defined.
+        # Defaults to "default" if not present.
+        groupName: 'secondary-group'
+
+        # Mandatory script to be executed and watched by supervisor
+        command: 'while true ; do (echo foo ; sleep 1) done'
+
+        # Programs need names for supervisor to distinguish and assign to groups
+        name: 'this-is-a-program'
+
+        # Refer to the supervisord documentation for available optional arguments
+        # Supervisord config naming is the reason for having snake case style options instead of camel case
+        # See: http://supervisord.org/configuration.html#program-x-section-settings
+
+        process_name: '%(program_name)s_%(process_num)02d'
+        numprocs: 1
+        numprocs_start: 0
+        priority: 999
+        autostart: true
+        startsecs: 1
+        startretries: 3
+        autorestart: true
+        exitcodes: 0
+        stopsignal: 'TERM'
+        stopwaitsecs: 10
+        stopasgroup: false
+        killasgroup: false
+        user: 'www-data'
+        redirect_stderr: false
+        stdout_logfile: 'AUTO'
+        stdout_logfile_maxbytes: '50MB'
+        stdout_logfile_backups: 10
+        stdout_capture_maxbytes: 0
+        stdout_events_enabled: false
+        stdout_syslog: false
+        stderr_logfile: 'AUTO'
+        stderr_logfile_maxbytes: '50MB'
+        stderr_logfile_backups: 10
+        stderr_capture_maxbytes: 0
+        stderr_events_enabled: false
+        stderr_syslog: false
+
+        # The environment defaults to containing the flow context but will not append if set manually!
+        environment: "FLOW_CONTEXT='%env:FLOW_CONTEXT%'"
+
+        # The directory defaults to the flow root path
+        directory: "%FLOW_PATH_ROOT%"

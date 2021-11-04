@@ -1,0 +1,22 @@
+Netlogix:
+  Supervisor:
+
+    # List of class names implementing \Netlogix\Supervisor\Provider
+    providers:
+      ConfigurationBased: \Netlogix\Supervisor\ConfigurationBased\Provider
+
+    # List of program groups
+    groups:
+
+      default:
+        # Supervisor group name.
+        # Defaults to the array key if not present.
+        # Gets cleaned up to not contain invalid characters as of supervisor settings
+        name: "%FLOW_PATH_ROOT%"
+
+        # Defaults to 999
+        priority: 100
+
+    # List of supervisor programs
+    # See Configuration.yaml.example for examples and description
+    programs: []
