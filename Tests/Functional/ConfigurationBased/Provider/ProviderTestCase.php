@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Netlogix\Supervisor\Tests\Functional\ConfigurationBased\Provider;
 
-use Neos\Flow\Tests\FunctionalTestCase;
+use Netlogix\Supervisor\Tests\Functional\SupervisorTestCase;
 
-class ProviderTestCase extends FunctionalTestCase
+class ProviderTestCase extends SupervisorTestCase
 {
     const PROGRAM_NAME = 'program-identifier';
 

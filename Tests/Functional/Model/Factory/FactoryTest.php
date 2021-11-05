@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace Netlogix\Supervisor\Tests\Functional\Model\Factory;
 
-use Neos\Flow\Tests\FunctionalTestCase;
 use Netlogix\Supervisor\Model\Factory;
 use Netlogix\Supervisor\Model\Program;
+use Netlogix\Supervisor\Tests\Functional\SupervisorTestCase;
 
-class FactoryTest extends FunctionalTestCase
+class FactoryTest extends SupervisorTestCase
 {
     /**
      * @test

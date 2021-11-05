@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Netlogix\Supervisor\Tests\Functional\Model\Program;
 
-use Neos\Flow\Tests\FunctionalTestCase;
+use Netlogix\Supervisor\Tests\Functional\SupervisorTestCase;
 
-class ProgramTestCase extends FunctionalTestCase
+class ProgramTestCase extends SupervisorTestCase
 {
 }
