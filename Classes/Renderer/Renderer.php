@@ -59,11 +59,12 @@ final class Renderer
         static $replacement;
         if (is_null($replacement)) {
             $replacement = [];
-            foreach (['"', PHP_EOL, '\\'] as $specialChar) {
+            // TODO: Which characters have to be replaced?
+            foreach ([PHP_EOL, '\\'] as $specialChar) {
                 $replacement[$specialChar] = '\\' . $specialChar;
             }
         }
         $value = str_replace(array_keys($replacement), array_values($replacement), $value);
-        return sprintf('"%s"', $value);
+        return sprintf('%s', $value);
     }
 }
