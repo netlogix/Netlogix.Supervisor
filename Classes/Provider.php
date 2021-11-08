@@ -7,11 +7,6 @@ use Netlogix\Supervisor\Model;
 
 interface Provider
 {
-//    /**
-//     * @return Model\Group
-//     */
-//    public function getGroup(): Model\Group;
-
     /**
      * @return array<Model\Program>
      */

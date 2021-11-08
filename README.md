@@ -103,7 +103,7 @@ group. This means groups don't need to be configured beforehand or even at all.
 If no further configuration is presented, the supervisor group name is 
 generated from the "groupName" configuration option of a program.
 
-Groups can override their names. This mens several programs can e.g. refer 
+Groups can override their names. This menas several programs can e.g. refer 
 to the same group "default" but the group can be renamed if different 
 applications share a common supervisor daemon.
 
