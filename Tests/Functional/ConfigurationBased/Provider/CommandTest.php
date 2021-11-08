@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Netlogix\Supervisor\Tests\Functional\ConfigurationBased\Provider;
 
 use Netlogix\Supervisor\ConfigurationBased\Provider;
-use Netlogix\Supervisor\Exception\Program\EmptyGroupException;
+use Netlogix\Supervisor\Exception\Program\EmptyCommandException;
 
 class CommandTest extends ProviderTestCase
 {
@@ -20,7 +20,7 @@ class CommandTest extends ProviderTestCase
 
         $this->inject($provider, 'programTemplates', $fixture);
 
-        self::expectException(EmptyGroupException::class);
+        self::expectException(EmptyCommandException::class);
         self::expectExceptionCode(1635176018);
 
         $provider->getPrograms();
@@ -38,7 +38,7 @@ class CommandTest extends ProviderTestCase
 
         $this->inject($provider, 'programTemplates', $fixture);
 
-        self::expectException(EmptyGroupException::class);
+        self::expectException(EmptyCommandException::class);
         self::expectExceptionCode(1635176018);
 
         $provider->getPrograms();
@@ -56,7 +56,7 @@ class CommandTest extends ProviderTestCase
 
         $this->inject($provider, 'programTemplates', $fixture);
 
-        self::expectException(EmptyGroupException::class);
+        self::expectException(EmptyCommandException::class);
         self::expectExceptionCode(1635176018);
 
         $provider->getPrograms();

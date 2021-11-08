@@ -5,7 +5,7 @@ namespace Netlogix\Supervisor\ConfigurationBased;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
-use Netlogix\Supervisor\Exception\Program\EmptyGroupException;
+use Netlogix\Supervisor\Exception\Program\EmptyCommandException;
 use Netlogix\Supervisor\Exception\Program\EmptyNameException;
 use Netlogix\Supervisor\Model;
 use Netlogix\Supervisor\Provider as ProviderInterface;
@@ -49,7 +49,7 @@ class Provider implements ProviderInterface
                 );
             }
             if ($command === '') {
-                throw new EmptyGroupException(
+                throw new EmptyCommandException(
                     sprintf('The program "%s" has no command', $programTemplate['name']),
                     1635176018
                 );
