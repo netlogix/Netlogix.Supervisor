@@ -37,11 +37,6 @@ final class Renderer
     {
         $content = '[program:' . $program->getName() . ']' . PHP_EOL;
 
-        $replacement = [];
-        foreach (['"', PHP_EOL, '\\'] as $specialChar) {
-            $replacement[$specialChar] = '\\' . $specialChar;
-        }
-
         foreach ($program->getArguments() as $key => $value) {
             if (is_bool($value)) {
                 $value = $value ? 'true' : 'false';

@@ -34,13 +34,13 @@ class GroupTest extends SupervisorTestCase
         assert(defined('FLOW_PATH_ROOT'));
         $expected = <<<"INI"
 [program:the-program-name]
-directory="/var/www/directory"
-environment="FLOW_CONTEXT='Testing/Functional'"
+directory=/var/www/directory
+environment=FLOW_CONTEXT='Testing/Functional'
 true_value=true
 false_value=false
 zero_value=0
 integer_value=123456789
-command="./flow help"
+command=./flow help
 
 INI;
 
