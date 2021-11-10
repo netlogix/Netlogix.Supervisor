@@ -16,7 +16,7 @@ final class Renderer
 {
     public function renderGroup(Model\Group $group): string
     {
-        $content = '[program:' . $group->getName() . ']' . PHP_EOL;
+        $content = '[group:' . $group->getName() . ']' . PHP_EOL;
 
         foreach ($group->getArguments() as $key => $value) {
             $content .= $key . '=' . $value . PHP_EOL;
