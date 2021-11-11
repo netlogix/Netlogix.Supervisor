@@ -1,12 +1,8 @@
 {
     "name": "netlogix/supervisor",
+    "type": "neos-package",
     "description": "Create supervisor program groups and programs via CLI.",
     "license": "MIT",
-    "type": "neos-package",
-    "require": {
-        "neos/flow": "*",
-        "ext-json": "*"
-    },
     "autoload": {
         "psr-4": {
             "Netlogix\\Supervisor\\": "Classes/"
@@ -15,6 +11,15 @@
     "autoload-dev": {
         "psr-4": {
             "Netlogix\\Supervisor\\Tests\\": "Tests/"
+        }
+    },
+    "require": {
+        "ext-json": "*",
+        "neos/flow": "*"
+    },
+    "extra": {
+        "neos": {
+            "package-key": "Netlogix.Supervisor"
         }
     }
 }
