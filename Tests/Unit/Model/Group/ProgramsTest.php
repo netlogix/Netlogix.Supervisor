@@ -1,7 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
-namespace Netlogix\Supervisor\Tests\Functional\Model\Group;
+namespace Netlogix\Supervisor\Tests\Unit\Model\Group;
 
 use Netlogix\Supervisor\Exception\Group\EmptyGroupException;
 use Netlogix\Supervisor\Model\Group;

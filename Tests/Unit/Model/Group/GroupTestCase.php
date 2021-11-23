@@ -1,10 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
-namespace Netlogix\Supervisor\Tests\Functional\Model\Group;
+namespace Netlogix\Supervisor\Tests\Unit\Model\Group;
 
 use Netlogix\Supervisor\Model\Program;
-use Netlogix\Supervisor\Tests\Functional\SupervisorTestCase;
+use Netlogix\Supervisor\Tests\Unit\SupervisorTestCase;
 
 class GroupTestCase extends SupervisorTestCase
 {
@@ -13,8 +14,10 @@ class GroupTestCase extends SupervisorTestCase
      */
     protected $program;
 
-    public function setUp()
+    public function setUp(): void
     {
+        parent::setUp();
+
         $this->program = new Program(
             'programName',
             'groupName',
