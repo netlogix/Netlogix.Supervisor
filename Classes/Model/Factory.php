@@ -66,7 +66,7 @@ final class Factory
          * \p{xx}   A character with the xx unicode property.   https://php.net/manual/en/regexp.reference.escape.php
          * \pL      Every Letter                                https://php.net/manual/en/regexp.reference.unicode.php
          */
-        $cleanupPattern = '%[^\\pL\\d]+%iUum';
+        $cleanupPattern = '%[^\\pL\\d]+%ium';
 
         $subject = (string)preg_replace($cleanupPattern, '-', $subject);
         $subject = trim($subject, '-');
