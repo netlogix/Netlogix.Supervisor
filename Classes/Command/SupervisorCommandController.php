@@ -29,19 +29,9 @@ class SupervisorCommandController extends CommandController
         Files::createDirectoryRecursively(self::CONFIG_PATH);
         Files::emptyDirectoryRecursively(self::CONFIG_PATH);
 
-        $factory = new Model\Factory();
-
-        foreach ($this->getProviders() as $provider) {
-            assert($provider instanceof Provider);
-            foreach ($provider->getPrograms() as $program) {
-                assert($program instanceof Model\Program);
-                $factory->registerProgram($program);
-            }
-        }
-
         $renderer = new Renderer\Renderer();
 
-        foreach ($factory->getGroups() as $group) {
+        foreach ($this->getGroups() as $group) {
 
             assert($group instanceof Model\Group);
             file_put_contents(
@@ -56,7 +46,66 @@ class SupervisorCommandController extends CommandController
                 );
             }
         }
+    }
 
+    public function startGroupsCommand(): void
+    {
+        $groups = $this->getGroups();
+        array_map([$this, 'supervisorctlGroupAction'], $groups, array_fill(0, count($groups), 'start'));
+    }
+
+    public function stopGroupsCommand(): void
+    {
+        $groups = $this->getGroups();
+        array_map([$this, 'supervisorctlGroupAction'], $groups, array_fill(0, count($groups), 'stop'));
+    }
+
+    public function updateGroupsCommand(): void
+    {
+        $groups = $this->getGroups();
+
+
+        array_map([$this, 'supervisorctlGroupAction'], $groups, array_fill(0, count($groups), 'update'));
+    }
+
+    /**
+     * @param string $action
+     * @param Model\Group $group
+     * @return void
+     */
+    protected function supervisorctlGroupAction(Model\Group $group, string $action)
+    {
+        $output = shell_exec(sprintf('sudo supervisorctl %s %s%s',$action, $group->getName(), $action != 'update' ? ':' : '') . PHP_EOL);
+        if (is_string($output)) {
+            $this->output($output);
+        }
+    }
+
+    /**
+     * @return Model\Factory
+     */
+    protected function bootstrapFactory(): Model\Factory
+    {
+        $factory = new Model\Factory();
+
+        foreach ($this->getProviders() as $provider) {
+            assert($provider instanceof Provider);
+            foreach ($provider->getPrograms() as $program) {
+                assert($program instanceof Model\Program);
+                $factory->registerProgram($program);
+            }
+        }
+
+        return $factory;
+    }
+
+    /**
+     * @return array<Model\Group>
+     */
+    protected function getGroups(): array
+    {
+        $factory = $this->bootstrapFactory();
+        return $factory->getGroups();
     }
 
     /**
@@ -75,6 +124,11 @@ class SupervisorCommandController extends CommandController
         );
     }
 
+    /**
+     * @param string $type
+     * @param string $name
+     * @return string
+     */
     private static function fileName(string $type, string $name): string
     {
         $filePattern = '%s-%s.conf';

@@ -57,7 +57,7 @@ class Provider implements ProviderInterface
 
             unset($programTemplate['name']);
             unset($programTemplate['command']);
-            unset($programTemplate['group']);
+            unset($programTemplate['groupName']);
 
             $groups[$groupName] = $groups[$groupName] ?? [];
             $groups[$groupName][$name] = $name;
