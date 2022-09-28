@@ -51,39 +51,38 @@ class SupervisorCommandController extends CommandController
     public function startGroupsCommand(): void
     {
         $groups = $this->getGroups();
-        array_map([$this, 'supervisorctlGroupAction'], $groups, array_fill(0, count($groups), 'start'));
+        array_walk($groups, fn(Model\Group $group) => $this->runSupervisorCommand($group, 'start'));
     }
 
     public function stopGroupsCommand(): void
     {
         $groups = $this->getGroups();
-        array_map([$this, 'supervisorctlGroupAction'], $groups, array_fill(0, count($groups), 'stop'));
+        array_walk($groups, fn(Model\Group $group) => $this->runSupervisorCommand($group, 'stop'));
     }
 
     public function updateGroupsCommand(): void
     {
         $groups = $this->getGroups();
-
-
-        array_map([$this, 'supervisorctlGroupAction'], $groups, array_fill(0, count($groups), 'update'));
+        array_walk($groups, fn(Model\Group $group) => $this->runSupervisorCommand($group, 'update'));
     }
 
-    /**
-     * @param string $action
-     * @param Model\Group $group
-     * @return void
-     */
-    protected function supervisorctlGroupAction(Model\Group $group, string $action)
+    protected function runSupervisorCommand(Model\Group $group, string $action): bool
     {
-        $output = shell_exec(sprintf('sudo supervisorctl %s %s%s',$action, $group->getName(), $action != 'update' ? ':' : '') . PHP_EOL);
-        if (is_string($output)) {
-            $this->output($output);
+        $output = [];
+        $command = sprintf('sudo supervisorctl %s %s%s 2>&1',escapeshellarg($action), escapeshellarg($group->getName()), $action !== 'update' ? ':' : '');
+        $output = exec($command, $output, $result);
+        if ($result !== 0) {
+            if (count($output) > 0) {
+                $exceptionMessage = implode(PHP_EOL, $output);
+            } else {
+                $exceptionMessage = sprintf('Execution of supervisorctl failed with exit code %d without any further output.', $result);
+            }
+            $this->outputLine($exceptionMessage);
         }
+
+        return $result === 0;
     }
 
-    /**
-     * @return Model\Factory
-     */
     protected function bootstrapFactory(): Model\Factory
     {
         $factory = new Model\Factory();
@@ -124,11 +123,6 @@ class SupervisorCommandController extends CommandController
         );
     }
 
-    /**
-     * @param string $type
-     * @param string $name
-     * @return string
-     */
     private static function fileName(string $type, string $name): string
     {
         $filePattern = '%s-%s.conf';
