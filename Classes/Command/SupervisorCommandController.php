@@ -51,22 +51,25 @@ class SupervisorCommandController extends CommandController
     public function startGroupsCommand(): void
     {
         $groups = $this->getGroups();
-        array_walk($groups, fn(Model\Group $group) => $this->runSupervisorCommand($group, 'start'));
+        array_walk($groups, [$this, 'runSupervisorCommand'], 'start');
     }
 
     public function stopGroupsCommand(): void
     {
         $groups = $this->getGroups();
-        array_walk($groups, fn(Model\Group $group) => $this->runSupervisorCommand($group, 'stop'));
+        array_walk($groups, [$this, 'runSupervisorCommand'], 'stop');
     }
 
+    /**
+     * Reloads config and starts/stops programs accordingly
+     */
     public function updateGroupsCommand(): void
     {
         $groups = $this->getGroups();
-        array_walk($groups, fn(Model\Group $group) => $this->runSupervisorCommand($group, 'update'));
+        array_walk($groups, [$this, 'runSupervisorCommand'], 'update');
     }
 
-    protected function runSupervisorCommand(Model\Group $group, string $action): bool
+    protected function runSupervisorCommand(Model\Group $group, int $key, string $action): bool
     {
         $output = [];
         $command = sprintf('sudo supervisorctl %s %s%s 2>&1',escapeshellarg($action), escapeshellarg($group->getName()), $action !== 'update' ? ':' : '');
