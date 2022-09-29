@@ -24,6 +24,9 @@ class SupervisorCommandController extends CommandController
      */
     protected $providerClassNames = [];
 
+    /**
+     * Creates supervisor configuration
+     */
     public function createCommand(): void
     {
         Files::createDirectoryRecursively(self::CONFIG_PATH);
@@ -48,12 +51,18 @@ class SupervisorCommandController extends CommandController
         }
     }
 
+    /**
+     * Starts all programs of configured groups
+     */
     public function startGroupsCommand(): void
     {
         $groups = $this->getGroups();
         array_walk($groups, [$this, 'runSupervisorCommand'], 'start');
     }
 
+    /**
+     * Stops all programs of configured groups
+     */
     public function stopGroupsCommand(): void
     {
         $groups = $this->getGroups();
