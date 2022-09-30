@@ -56,8 +56,7 @@ class SupervisorCommandController extends CommandController
      */
     public function startGroupsCommand(): void
     {
-        $groups = $this->getGroups();
-        array_walk($groups, [$this, 'runSupervisorCommand'], 'start');
+        $this->runSupervisorCommand('start', ...$this->getGroups());
     }
 
     /**
@@ -65,8 +64,7 @@ class SupervisorCommandController extends CommandController
      */
     public function stopGroupsCommand(): void
     {
-        $groups = $this->getGroups();
-        array_walk($groups, [$this, 'runSupervisorCommand'], 'stop');
+        $this->runSupervisorCommand('stop', ...$this->getGroups());
     }
 
     /**
@@ -74,18 +72,20 @@ class SupervisorCommandController extends CommandController
      */
     public function updateGroupsCommand(): void
     {
-        $groups = $this->getGroups();
-        array_walk($groups, [$this, 'runSupervisorCommand'], 'update');
+        $this->runSupervisorCommand('update', ...$this->getGroups());
     }
 
-    protected function runSupervisorCommand(Model\Group $group, int $key, string $action): bool
+    protected function runSupervisorCommand(string $action, Model\Group ...$groups): bool
     {
         $output = [];
-        $command = sprintf('supervisorctl %s %s%s 2>&1',escapeshellarg($action), escapeshellarg($group->getName()), $action !== 'update' ? ':' : '');
-        $output = exec($command, $output, $result);
+        $groupArgs = implode(' ', array_map(function($i){return $i->getName();}, $groups));
+        $command = sprintf('supervisorctl %s %s%s 2>&1',escapeshellarg($action), escapeshellarg($groupArgs), $action !== 'update' ? ':' : '');
+
+        exec($command, $output, $result);
+        $output = implode("\n", $output);
         if ($result !== 0) {
-            if (count($output) > 0) {
-                $exceptionMessage = implode(PHP_EOL, $output);
+            if (!empty($output)) {
+                $exceptionMessage = $output;
             } else {
                 $exceptionMessage = sprintf('Execution of supervisorctl failed with exit code %d without any further output.', $result);
             }
