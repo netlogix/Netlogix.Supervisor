@@ -81,7 +81,7 @@ class SupervisorCommandController extends CommandController
     protected function runSupervisorCommand(Model\Group $group, int $key, string $action): bool
     {
         $output = [];
-        $command = sprintf('sudo supervisorctl %s %s%s 2>&1',escapeshellarg($action), escapeshellarg($group->getName()), $action !== 'update' ? ':' : '');
+        $command = sprintf('supervisorctl %s %s%s 2>&1',escapeshellarg($action), escapeshellarg($group->getName()), $action !== 'update' ? ':' : '');
         $output = exec($command, $output, $result);
         if ($result !== 0) {
             if (count($output) > 0) {
