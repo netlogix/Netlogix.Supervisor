@@ -3,9 +3,9 @@ Netlogix.Supervisor
 
 This package creates supervisor configuration files via flow CLI.
 
-Configuration files are named "group-something.conf" when they contain a 
-supervisor group configuration or "program-something.conf" when they contain 
-a supervisor program configuration. Both are created at 
+Configuration files are named "group-something.conf" when they contain a
+supervisor group configuration or "program-something.conf" when they contain
+a supervisor program configuration. Both are created at
 Configuration/Supervisor within your application.
 
 
@@ -20,19 +20,26 @@ Supervisor allows to "include" other files and even allows for globbing.
 files=/etc/supervisor/conf.d/*.conf /var/www/*/Configuration/Supervisor/group.conf /var/www/*/Configuration/Supervisor/program*.conf
 ```
 
-Creating supervisor files dynamically is intended to be a compile time step, 
+Creating supervisor files dynamically is intended to be a compile time step,
 preferably on deployment.
 
 
 Available configuration options:
 --------------------------------
 
-Program settings get passed to the supervisor configuration file without 
+Program settings get passed to the supervisor configuration file without
 validation, so every current and future configuration option is available.
 
 See: http://supervisord.org/configuration.html#program-x-section-settings
 
-
+Available flow commands:
+-----------------------
+```
+./flow supervisor:create          Creates supervisor configuration
+./flow supervisor:startgroups     Starts all programs of configured groups
+./flow supervisor:stopgroups      Stops all programs of configured groups
+./flow supervisor:updategroups    Reloads config and starts/stops programs accordingly
+```
 Create supervisor settings via YAML:
 ------------------------------------
 
@@ -97,14 +104,14 @@ class Provider implements \Netlogix\Supervisor\Provider
 Configure group settings:
 -------------------------
 
-Groups are created on demand as soon as a program assigns itself to the 
+Groups are created on demand as soon as a program assigns itself to the
 group. This means groups don't need to be configured beforehand or even at all.
 
-If no further configuration is presented, the supervisor group name is 
+If no further configuration is presented, the supervisor group name is
 generated from the "groupName" configuration option of a program.
 
-Groups can override their names. This menas several programs can e.g. refer 
-to the same group "default" but the group can be renamed if different 
+Groups can override their names. This menas several programs can e.g. refer
+to the same group "default" but the group can be renamed if different
 applications share a common supervisor daemon.
 
 This setting also provides a priority setting.
@@ -123,7 +130,7 @@ Netlogix:
 Renamed identifiers:
 --------------------
 
-Both, group names and program names need to be cleaned to comply with 
+Both, group names and program names need to be cleaned to comply with
 supervisors naming scheme. This is done automatically, so even if the
-group name is configured as `%FLOW_PATH_ROOT%` it will be transformed to 
+group name is configured as `%FLOW_PATH_ROOT%` it will be transformed to
 `var-www-document-root`.

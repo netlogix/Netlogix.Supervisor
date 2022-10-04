@@ -24,24 +24,17 @@ class SupervisorCommandController extends CommandController
      */
     protected $providerClassNames = [];
 
+    /**
+     * Creates supervisor configuration
+     */
     public function createCommand(): void
     {
         Files::createDirectoryRecursively(self::CONFIG_PATH);
         Files::emptyDirectoryRecursively(self::CONFIG_PATH);
 
-        $factory = new Model\Factory();
-
-        foreach ($this->getProviders() as $provider) {
-            assert($provider instanceof Provider);
-            foreach ($provider->getPrograms() as $program) {
-                assert($program instanceof Model\Program);
-                $factory->registerProgram($program);
-            }
-        }
-
         $renderer = new Renderer\Renderer();
 
-        foreach ($factory->getGroups() as $group) {
+        foreach ($this->getGroups() as $group) {
 
             assert($group instanceof Model\Group);
             file_put_contents(
@@ -56,7 +49,74 @@ class SupervisorCommandController extends CommandController
                 );
             }
         }
+    }
 
+    /**
+     * Starts all programs of configured groups
+     */
+    public function startGroupsCommand(): void
+    {
+        $this->runSupervisorCommand('start', ...$this->getGroups());
+    }
+
+    /**
+     * Stops all programs of configured groups
+     */
+    public function stopGroupsCommand(): void
+    {
+        $this->runSupervisorCommand('stop', ...$this->getGroups());
+    }
+
+    /**
+     * Reloads config and starts/stops programs accordingly
+     */
+    public function updateGroupsCommand(): void
+    {
+        $this->runSupervisorCommand('update', ...$this->getGroups());
+    }
+
+    protected function runSupervisorCommand(string $action, Model\Group ...$groups): bool
+    {
+        $output = [];
+        $groupArgs = implode(' ', array_map(function($i){return $i->getName();}, $groups));
+        $command = sprintf('supervisorctl %s %s%s 2>&1',escapeshellarg($action), escapeshellarg($groupArgs), $action !== 'update' ? ':' : '');
+
+        exec($command, $output, $result);
+        $output = implode("\n", $output);
+        if ($result !== 0) {
+            if (!empty($output)) {
+                $exceptionMessage = $output;
+            } else {
+                $exceptionMessage = sprintf('Execution of supervisorctl failed with exit code %d without any further output.', $result);
+            }
+            $this->outputLine($exceptionMessage);
+        }
+
+        return $result === 0;
+    }
+
+    protected function bootstrapFactory(): Model\Factory
+    {
+        $factory = new Model\Factory();
+
+        foreach ($this->getProviders() as $provider) {
+            assert($provider instanceof Provider);
+            foreach ($provider->getPrograms() as $program) {
+                assert($program instanceof Model\Program);
+                $factory->registerProgram($program);
+            }
+        }
+
+        return $factory;
+    }
+
+    /**
+     * @return array<Model\Group>
+     */
+    protected function getGroups(): array
+    {
+        $factory = $this->bootstrapFactory();
+        return $factory->getGroups();
     }
 
     /**
