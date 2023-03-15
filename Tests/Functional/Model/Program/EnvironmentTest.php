@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Netlogix\Supervisor\Tests\Functional\Model\Program;
 
+use Neos\Flow\Core\Bootstrap;
 use Netlogix\Supervisor\Model\Program;
 use function assert;
 
@@ -21,7 +22,8 @@ class EnvironmentTest extends ProgramTestCase
         );
 
         assert(\defined('FLOW_PATH_ROOT'));
-        self::assertEquals("FLOW_CONTEXT='Testing/Functional'", $program->getArguments()['environment']);
+        $flowContext = Bootstrap::getEnvironmentConfigurationSetting('FLOW_CONTEXT');
+        self::assertEquals(sprintf("FLOW_CONTEXT='%s'", $flowContext), $program->getArguments()['environment']);
     }
 
     /**
