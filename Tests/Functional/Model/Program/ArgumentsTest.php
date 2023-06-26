@@ -57,7 +57,7 @@ class ArgumentsTest extends ProgramTestCase
     /**
      * @return Traversable<string, array<false|0|''>>
      */
-    public function provideEmptyButNotNullArguments(): Traversable
+    public static function provideEmptyButNotNullArguments(): Traversable
     {
         yield 'false' => [false];
         yield 'zero' => [0];
