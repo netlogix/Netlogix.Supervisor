@@ -9,10 +9,18 @@ Netlogix:
     groups:
 
       default:
-        # Supervisor group name.
-        # Defaults to the array key if not present.
+        # Maps to a Supervisor group name.
         # Gets cleaned up to not contain invalid characters as of supervisor settings
-        name: "%FLOW_PATH_ROOT%"
+        #
+        # In general, `supervisorctl restart flow:` calls are limited to only one
+        # specific group.
+        # If multiple flow instances share a common supervisor daemon, the unique group name
+        # per flow instances allows restart calls on deployment that don't affect other flow
+        # instances.
+        # This can be changed to e.g. `name: "%FLOW_PATH_ROOT%"`
+        #
+        # Defaults to the array key if not present.
+        name: "default"
 
         # Defaults to 999
         priority: 100
