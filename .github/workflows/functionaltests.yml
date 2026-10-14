@@ -36,7 +36,7 @@ jobs:
           ini-values: opcache.fast_shutdown=0
 
       - name: "[1/5] Create composer project - Cache composer dependencies"
-        uses: actions/cache@v1
+        uses: actions/cache@v6
         with:
           path: ~/.composer/cache
           key: php-${{ matrix.php-version }}-flow-${{ matrix.flow-version }}-composer-${{ hashFiles('composer.json') }}
@@ -60,7 +60,7 @@ jobs:
         working-directory: ${{ env.FLOW_DIST_FOLDER }}
 
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
         with:
           path: ${{ env.FLOW_DIST_FOLDER }}/DistributionPackages/Netlogix.Supervisor
 
