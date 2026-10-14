@@ -16,7 +16,11 @@ use function sprintf;
 
 class SupervisorCommandController extends CommandController
 {
-    private const CONFIG_PATH = FLOW_PATH_CONFIGURATION . 'Supervisor/';
+    /**
+     * @var string
+     * @Flow\InjectConfiguration(package="Netlogix.Supervisor", path="configurationPath")
+     */
+    protected $configurationPath = '';
 
     /**
      * @var array<class-string<Provider>>
@@ -29,8 +33,8 @@ class SupervisorCommandController extends CommandController
      */
     public function createCommand(): void
     {
-        Files::createDirectoryRecursively(self::CONFIG_PATH);
-        Files::emptyDirectoryRecursively(self::CONFIG_PATH);
+        Files::createDirectoryRecursively($this->configurationPath());
+        Files::emptyDirectoryRecursively($this->configurationPath());
 
         $renderer = new Renderer\Renderer();
 
@@ -38,13 +42,13 @@ class SupervisorCommandController extends CommandController
 
             assert($group instanceof Model\Group);
             file_put_contents(
-                self::fileName('group', $group->getName()),
+                $this->fileName('group', $group->getName()),
                 $renderer->renderGroup($group)
             );
 
             foreach ($group->getPrograms() as $program) {
                 file_put_contents(
-                    self::fileName('program', $program->getName()),
+                    $this->fileName('program', $program->getName()),
                     $renderer->renderProgram($program)
                 );
             }
@@ -135,9 +139,15 @@ class SupervisorCommandController extends CommandController
         );
     }
 
-    private static function fileName(string $type, string $name): string
+    private function fileName(string $type, string $name): string
     {
         $filePattern = '%s-%s.conf';
-        return self::CONFIG_PATH . sprintf($filePattern, $type, $name);
+        return $this->configurationPath() . sprintf($filePattern, $type, $name);
+    }
+
+    private function configurationPath(): string
+    {
+        $configurationPath = $this->configurationPath ?: FLOW_PATH_CONFIGURATION . 'Supervisor/';
+        return rtrim($configurationPath, '/') . '/';
     }
 }

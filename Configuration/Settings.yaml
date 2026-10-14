@@ -1,6 +1,11 @@
 Netlogix:
   Supervisor:
 
+    # Directory the supervisor configuration files are written to.
+    # It is emptied on every "supervisor:create". Falls back to Configuration/Supervisor if empty,
+    # so e.g. '%env:SUPERVISOR_DIR%' can be used without breaking setups that don't set it.
+    configurationPath: '%FLOW_PATH_CONFIGURATION%Supervisor/'
+
     # List of class names implementing \Netlogix\Supervisor\Provider
     providers:
       ConfigurationBased: \Netlogix\Supervisor\ConfigurationBased\Provider

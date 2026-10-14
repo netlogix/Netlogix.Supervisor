@@ -10,18 +10,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: [ 7.2, 7.3, 7.4, 8.0 ]
-        flow-version: [ 5.3, 6.3, 7.0 ]
-        exclude:
-          # Disable Flow 5.3 and 6.3 on PHP 8.0, as only ^7.2 is supported
-          - php-version: 8.0
-            flow-version: 5.3
-          - php-version: 8.0
-            flow-version: 6.3
-
-            # Disable Flow 7.0 on PHP 7.2, as 7.3 is required
-          - php-version: 7.2
-            flow-version: 7.0
+        php-version: [ '8.2', '8.3', '8.4' ]
+        flow-version: [ '8.3', '9.0' ]
+        include:
+          # Flow 9.2 requires PHP 8.4
+          - php-version: '8.4'
+            flow-version: '9.2'
 
     env:
       APP_ENV: true
@@ -36,7 +30,7 @@ jobs:
           ini-values: opcache.fast_shutdown=0
 
       - name: "[1/5] Create composer project - Cache composer dependencies"
-        uses: actions/cache@v1
+        uses: actions/cache@v6
         with:
           path: ~/.composer/cache
           key: php-${{ matrix.php-version }}-flow-${{ matrix.flow-version }}-composer-${{ hashFiles('composer.json') }}
@@ -45,7 +39,7 @@ jobs:
             php-${{ matrix.php-version }}-flow-
 
       - name: "[2/5] Create composer project - No install"
-        run: composer create-project neos/flow-base-distribution ${{ env.FLOW_DIST_FOLDER }} --prefer-dist --no-progress --no-install "^${{ matrix.flow-version }}"
+        run: composer create-project neos/flow-base-distribution ${{ env.FLOW_DIST_FOLDER }} --prefer-dist --no-progress --no-install "~${{ matrix.flow-version }}.0"
 
       - name: "[3/5] Allow neos composer plugin"
         run: composer config --no-plugins allow-plugins.neos/composer-plugin true
@@ -60,7 +54,7 @@ jobs:
         working-directory: ${{ env.FLOW_DIST_FOLDER }}
 
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
         with:
           path: ${{ env.FLOW_DIST_FOLDER }}/DistributionPackages/Netlogix.Supervisor
 

@@ -6,7 +6,8 @@ This package creates supervisor configuration files via flow CLI.
 Configuration files are named "group-something.conf" when they contain a
 supervisor group configuration or "program-something.conf" when they contain
 a supervisor program configuration. Both are created at
-Configuration/Supervisor within your application.
+Configuration/Supervisor within your application by default, see
+`Netlogix.Supervisor.configurationPath` to change the directory.
 
 
 Setup:
